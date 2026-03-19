@@ -68,9 +68,47 @@
     .char-hover.bouncing {
       animation: charBounce 0.6s ease-in-out infinite;
     }
+
+    #top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 104px;
+      z-index: 100;
+      display: none;
+    }
+
+    #top-bar img.bar-bg {
+      width: 1920px;
+      height: 104px;
+      display: block;
+    }
+
+    .tab-btn {
+      position: absolute;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .tab-btn:hover { transform: scale(1.05); }
   </style>
 </head>
 <body>
+
+  <!-- top bar -->
+  <div id="top-bar">
+    <img class="bar-bg" src="common/quiz/bar.jpg" alt="bar">
+
+    <!-- back -->
+    <img class="tab-btn" src="common/quiz/back.png" alt="back" style="left:1823px; top:8px;" onclick="goBack()">
+
+    <!-- tab-1 (초기 on) -->
+    <img class="tab-btn" id="tab-1" src="common/quiz/tab1_on.png" alt="tab1" style="left:1575px; top:27px;" onclick="toggleTab(1)">
+
+    <!-- tab-2 (초기 off) -->
+    <img class="tab-btn" id="tab-2" src="common/quiz/tab2_off.png" alt="tab2" style="left:1675px; top:27px;" onclick="toggleTab(2)">
+  </div>
 
   <div class="slide active" id="slide-0">
     <img class="bg" src="03/bg_0.jpg" alt="bg_0">
@@ -92,18 +130,18 @@
     <img class="bg" src="03/bg_1.png" alt="bg_1">
 
     <!-- white box 1 -->
-    <div class="white-box" style="left:1117px; top:364px;"></div>
+    <div class="white-box" id="wbox-0" style="left:1117px; top:364px;"></div>
 
     <!-- question_md 1 -->
-    <div class="q-btn" id="qbtn-0" style="left:1132px; top:361px;" onclick="hideQBtn(this)">
+    <div class="q-btn" id="qbtn-0" style="left:1132px; top:361px;" onclick="hideQBtn(this, 'wbox-0')">
       <img src="common/question_md.png" alt="question_md">
     </div>
 
     <!-- white box 3 -->
-    <div class="white-box" style="left:1203px; top:624px;"></div>
+    <div class="white-box" id="wbox-1" style="left:1203px; top:624px;"></div>
 
     <!-- question_md 3 -->
-    <div class="q-btn" id="qbtn-1" style="left:1220px; top:618px;" onclick="hideQBtn(this)">
+    <div class="q-btn" id="qbtn-1" style="left:1220px; top:618px;" onclick="hideQBtn(this, 'wbox-1')">
       <img src="common/question_md.png" alt="question_md">
     </div>
   </div>
@@ -111,11 +149,22 @@
   <div class="slide" id="slide-2">
     <img class="bg" src="03/bg_2.png" alt="bg_2">
 
-    <!-- white box 2 -->
-    <div class="white-box" style="left:1203px; top:624px;"></div>
+    <!-- white box 3 -->
+    <div class="white-box" id="wbox-3" style="left:638px; top:472px; width:745px; height:103px;"></div>
 
-    <!-- question_md 2 -->
-    <div class="q-btn" id="qbtn-2" style="left:1220px; top:618px;" onclick="hideQBtn(this)">
+    <!-- white box 5 -->
+    <div class="white-box" id="wbox-5" style="left:684px; top:589px; width:719px; height:102px;"></div>
+
+    <!-- question_md 3 -->
+    <div class="q-btn" id="qbtn-3" style="left:954px; top:469px;" onclick="hideQBtn(this, 'wbox-3', 'wbox-5')">
+      <img src="common/question_md.png" alt="question_md">
+    </div>
+
+    <!-- white box 4 -->
+    <div class="white-box" id="wbox-4" style="left:903px; top:747px;"></div>
+
+    <!-- question_md 4 -->
+    <div class="q-btn" id="qbtn-4" style="left:918px; top:744px;" onclick="hideQBtn(this, 'wbox-4')">
       <img src="common/question_md.png" alt="question_md">
     </div>
   </div>
@@ -130,23 +179,26 @@
 
     function clickBtnMainYes() {
       isActive = !isActive;
+      const activeSlide = document.querySelector('.slide.active');
 
       if (isActive) {
         document.querySelector('#btn_mainYes img').src = 'common/btn_mainYes2.png';
-        document.getElementById('slide-1').classList.remove('active');
-        document.getElementById('slide-2').classList.add('active');
+        activeSlide.querySelectorAll('.q-btn').forEach(el => el.classList.add('invisible'));
+        activeSlide.querySelectorAll('.white-box').forEach(el => el.style.display = 'none');
       } else {
         reset();
       }
     }
 
-    function hideQBtn(el) {
+    function hideQBtn(el, ...wboxIds) {
       el.classList.add('invisible');
+      wboxIds.forEach(id => { if (id) document.getElementById(id).style.display = 'none'; });
     }
 
     function goToSlide(index) {
       document.querySelectorAll('.slide').forEach(function(s) { s.classList.remove('active'); });
       document.getElementById('slide-' + index).classList.add('active');
+      document.getElementById('top-bar').style.display = index >= 1 ? 'block' : 'none';
     }
 
     document.querySelectorAll('.char-hover').forEach(function(el) {
@@ -158,12 +210,50 @@
       });
     });
 
+    function goBack() {
+      // 모든 슬라이드의 q-btn, white-box 리셋
+      document.querySelectorAll('.q-btn').forEach(el => el.classList.remove('invisible'));
+      document.querySelectorAll('.white-box').forEach(el => el.style.display = 'block');
+      // btn_mainYes 리셋
+      isActive = false;
+      document.querySelector('#btn_mainYes img').src = 'common/btn_mainYes.png';
+      // slide-0으로 이동 및 top-bar 숨김
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      document.getElementById('slide-0').classList.add('active');
+      document.getElementById('top-bar').style.display = 'none';
+      // 탭 초기화
+      activeTab = 1;
+      document.getElementById('tab-1').src = 'common/quiz/tab1_on.png';
+      document.getElementById('tab-2').src = 'common/quiz/tab2_off.png';
+    }
+
+    let activeTab = 1;
+
+    function toggleTab(tab) {
+      if (activeTab === tab) return;
+      // btn_mainYes 초기화
+      if (isActive) {
+        isActive = false;
+        document.querySelector('#btn_mainYes img').src = 'common/btn_mainYes.png';
+      }
+      activeTab = tab;
+      if (tab === 1) {
+        document.getElementById('tab-1').src = 'common/quiz/tab1_on.png';
+        document.getElementById('tab-2').src = 'common/quiz/tab2_off.png';
+        goToSlide(1);
+      } else {
+        document.getElementById('tab-1').src = 'common/quiz/tab1_off.png';
+        document.getElementById('tab-2').src = 'common/quiz/tab2_on.png';
+        goToSlide(2);
+      }
+    }
+
     function reset() {
       isActive = false;
       document.querySelector('#btn_mainYes img').src = 'common/btn_mainYes.png';
-      document.getElementById('slide-2').classList.remove('active');
-      document.getElementById('slide-1').classList.add('active');
-      document.querySelectorAll('.q-btn').forEach(el => el.classList.remove('invisible'));
+      const activeSlide = document.querySelector('.slide.active');
+      activeSlide.querySelectorAll('.q-btn').forEach(el => el.classList.remove('invisible'));
+      activeSlide.querySelectorAll('.white-box').forEach(el => el.style.display = 'block');
     }
   </script>
 
