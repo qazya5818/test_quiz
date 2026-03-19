@@ -117,6 +117,7 @@
         document.querySelector("#btn_mainYes img").src = "common/btn_mainYes2.png";
         isAnswered = true;
         document.querySelectorAll(".item-container").forEach(el => el.classList.add("disabled"));
+        window.parent.postMessage('allAnswered', '*');
 
         // 항상 정답 슬롯에 correct.png 노출
         const correctSlotEl = document.getElementById("slot-" + answerSlot);
