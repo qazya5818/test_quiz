@@ -381,6 +381,10 @@
         document.getElementById(`btn_yes-${page}`).classList.add('disabled');
         document.getElementById(`btn_no-${page}`).classList.add('disabled');
 
+        // 모든 문제 완료 시 부모에 알림
+        const allDone = pageStates.every(s => s.btnMainYes);
+        if (allDone) window.parent.postMessage('allAnswered', '*');
+
         // 사용자 선택과 정답 비교 후 사운드 및 컨페티 재생
         const userAnswer = state.btnYes ? true : (state.btnNo ? false : null);
         if (userAnswer !== null) {
