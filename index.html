@@ -85,9 +85,7 @@
 
     function scaleWrapper() {
       const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1020);
-      const x = (window.innerWidth - 1920 * scale) / 2;
-      const y = (window.innerHeight - 1020 * scale) / 2;
-      document.getElementById('wrapper').style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+      document.getElementById('wrapper').style.transform = `scale(${scale})`;
     }
     window.addEventListener('resize', scaleWrapper);
     scaleWrapper();
