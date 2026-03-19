@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 1920px; height: 1020px; overflow: hidden; background: #000; }
+
+    iframe {
+      width: 1920px;
+      height: 1020px;
+      border: none;
+      display: block;
+    }
+
+    .page-nav {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 8px;
+      z-index: 99999;
+    }
+
+    .page-nav button {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0, 0, 0, 0.35);
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease;
+    }
+
+    .page-nav button:hover { background: rgba(0, 0, 0, 0.6); }
+    .page-nav button:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
+  </style>
+</head>
+<body>
+
+  <div class="page-nav">
+    <button id="btn-prev" onclick="navigate(-1)" title="이전">&#9664;</button>
+    <button id="btn-next" onclick="navigate(1)"  title="다음">&#9654;</button>
+  </div>
+
+  <iframe id="content"></iframe>
+
+  <script>
+    // 하위 HTML 목록 — 추가 시 여기에만 추가
+    const pages = [
+      'math_01.html',
+      'math_02.html',
+      'math_03.html',
+    ];
+
+    let currentIndex = 0;
+
+    function loadPage(index) {
+      currentIndex = index;
+      document.getElementById('content').src = pages[currentIndex];
+      document.getElementById('btn-prev').disabled = currentIndex === 0;
+      document.getElementById('btn-next').disabled = currentIndex === pages.length - 1;
+    }
+
+    function navigate(dir) {
+      const next = currentIndex + dir;
+      if (next >= 0 && next < pages.length) loadPage(next);
+    }
+
+    // 초기 로드
+    loadPage(0);
+  </script>
+
+</body>
+</html>

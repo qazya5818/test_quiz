@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math 03</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 1920px; height: 1020px; overflow: hidden; background: #ffffff; }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1020px;
+      display: none;
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    .slide img.bg {
+      width: 1920px;
+      height: 1020px;
+    }
+
+    .item {
+      position: absolute;
+    }
+
+    .white-box {
+      position: absolute;
+      width: 147px;
+      height: 96px;
+      background: #ffffff;
+    }
+
+    .btn {
+      position: absolute;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .btn:hover { transform: scale(1.05); }
+
+    .q-btn {
+      position: absolute;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .q-btn:hover { transform: scale(1.05); }
+    .q-btn.invisible { opacity: 0; pointer-events: none; }
+
+    .char-hover {
+      cursor: pointer;
+      transition: top 0.05s ease;
+    }
+
+    @keyframes charBounce {
+      0%   { transform: translateY(0); }
+      50%  { transform: translateY(-18px); }
+      100% { transform: translateY(0); }
+    }
+
+    .char-hover.bouncing {
+      animation: charBounce 0.6s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slide active" id="slide-0">
+    <img class="bg" src="03/bg_0.jpg" alt="bg_0">
+
+    <!-- decoLight-07 left -->
+    <img class="item" src="common/quiz/decoLight-07.png" alt="decoLight-07" style="left:258px; top:273px;">
+
+    <!-- decoLight-07 right -->
+    <img class="item" src="common/quiz/decoLight-07.png" alt="decoLight-07" style="left:1106px; top:273px;">
+
+    <!-- char_1 -->
+    <img class="item char-hover" id="char-1" src="common/quiz/char_1.png" alt="char_1" style="left:309px; top:251px;" onclick="goToSlide(1)">
+
+    <!-- char_2 -->
+    <img class="item char-hover" id="char-2" src="common/quiz/char_2.png" alt="char_2" style="left:1157px; top:273px;">
+  </div>
+
+  <div class="slide" id="slide-1">
+    <img class="bg" src="03/bg_1.png" alt="bg_1">
+
+    <!-- white box 1 -->
+    <div class="white-box" style="left:1117px; top:364px;"></div>
+
+    <!-- question_md 1 -->
+    <div class="q-btn" id="qbtn-0" style="left:1132px; top:361px;" onclick="hideQBtn(this)">
+      <img src="common/question_md.png" alt="question_md">
+    </div>
+
+    <!-- white box 3 -->
+    <div class="white-box" style="left:1203px; top:624px;"></div>
+
+    <!-- question_md 3 -->
+    <div class="q-btn" id="qbtn-1" style="left:1220px; top:618px;" onclick="hideQBtn(this)">
+      <img src="common/question_md.png" alt="question_md">
+    </div>
+  </div>
+
+  <div class="slide" id="slide-2">
+    <img class="bg" src="03/bg_2.png" alt="bg_2">
+
+    <!-- white box 2 -->
+    <div class="white-box" style="left:1203px; top:624px;"></div>
+
+    <!-- question_md 2 -->
+    <div class="q-btn" id="qbtn-2" style="left:1220px; top:618px;" onclick="hideQBtn(this)">
+      <img src="common/question_md.png" alt="question_md">
+    </div>
+  </div>
+
+  <!-- btn_mainYes -->
+  <div id="btn_mainYes" class="btn" style="left:1719px; top:930px;" onclick="clickBtnMainYes()">
+    <img src="common/btn_mainYes.png" alt="btn_mainYes">
+  </div>
+
+  <script>
+    let isActive = false;
+
+    function clickBtnMainYes() {
+      isActive = !isActive;
+
+      if (isActive) {
+        document.querySelector('#btn_mainYes img').src = 'common/btn_mainYes2.png';
+        document.getElementById('slide-1').classList.remove('active');
+        document.getElementById('slide-2').classList.add('active');
+      } else {
+        reset();
+      }
+    }
+
+    function hideQBtn(el) {
+      el.classList.add('invisible');
+    }
+
+    function goToSlide(index) {
+      document.querySelectorAll('.slide').forEach(function(s) { s.classList.remove('active'); });
+      document.getElementById('slide-' + index).classList.add('active');
+    }
+
+    document.querySelectorAll('.char-hover').forEach(function(el) {
+      el.addEventListener('mouseenter', function() {
+        this.classList.add('bouncing');
+      });
+      el.addEventListener('mouseleave', function() {
+        this.classList.remove('bouncing');
+      });
+    });
+
+    function reset() {
+      isActive = false;
+      document.querySelector('#btn_mainYes img').src = 'common/btn_mainYes.png';
+      document.getElementById('slide-2').classList.remove('active');
+      document.getElementById('slide-1').classList.add('active');
+      document.querySelectorAll('.q-btn').forEach(el => el.classList.remove('invisible'));
+    }
+  </script>
+
+</body>
+</html>
